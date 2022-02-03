@@ -7,7 +7,7 @@ const DataTable: FC = () => {
   useEffect(() => {
     fetch("http://localhost:5000/data?n=10")
       .then((response) => response.json())
-      .then((response) => setData(response));
+      .then((json) => setData(json));
   }, []);
 
   return (
@@ -22,7 +22,7 @@ const DataTable: FC = () => {
         </thead>
         <tbody>
           {data.map((d, idx) => (
-            <tr>
+            <tr key={idx}>
               <td>{d.name}</td>
               <td>{d.lastname}</td>
               <td>{d.age}</td>

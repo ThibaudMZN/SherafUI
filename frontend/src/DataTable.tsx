@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
-import { Data } from "./models/Data";
+import { TodoItem } from "./models/Data";
 
 const DataTable: FC = () => {
-  const [data, setData] = useState<Data[]>([]);
+  const [data, setData] = useState<TodoItem[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:5000/data?n=10")
@@ -15,17 +15,19 @@ const DataTable: FC = () => {
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Lastname</th>
+            <th>Id</th>
             <th>Age</th>
+            <th>Content</th>
+            <th>Priority</th>
           </tr>
         </thead>
         <tbody>
           {data.map((d, idx) => (
             <tr key={idx}>
-              <td>{d.name}</td>
-              <td>{d.lastname}</td>
+              <td>{d.id}</td>
               <td>{d.age}</td>
+              <td>{d.content}</td>
+              <td>{d.priority}</td>
             </tr>
           ))}
         </tbody>

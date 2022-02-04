@@ -1,9 +1,5 @@
 import sheraf
-
 from random import random
-
-import sheraf
-from models.anything import Something, TodoItem, InlineAddendum
 from datetime import date
 
 
@@ -13,8 +9,14 @@ class SherafDBManager():
         self.populate_database()
 
     def get_data_from_type(self, clazz):
-        # get_data_from_type(Something)
-        return list(clazz.all())
+        with sheraf.connection():
+            return [self.to_json(o) for o in list(clazz.all())]
+
+    def to_json(self, object):
+        json = {}
+        for attr in object.attributes:
+            json[attr] = getattr(object, attr)
+        return json
 
     @classmethod
     def populate_database(cls):
@@ -60,8 +62,8 @@ class Something(sheraf.Model):
     table = "something"
     name = sheraf.StringAttribute()
     todo_list = sheraf.SmallListAttribute(
-        sheraf.ModelAttribute("samples.anything.TodoItem"))
+        sheraf.ModelAttribute("api.samples.anything.TodoItem"))
     friends = sheraf.SmallDictAttribute(
-        sheraf.ModelAttribute("samples.anything.Something"))
+        sheraf.ModelAttribute("api.samples.anything.Something"))
     inline_addendums = sheraf.SmallListAttribute(
         sheraf.InlineModelAttribute(model=InlineAddendum))

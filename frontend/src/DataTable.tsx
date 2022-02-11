@@ -1,33 +1,39 @@
-import { FC, useEffect, useState } from "react";
-import { TodoItem } from "./models/Data";
+import { FC, ReactNode, useEffect, useState, useMemo, useCallback } from "react";
+import {SherafObject, TodoItem} from "./models/Data";
+
 
 const DataTable: FC = () => {
-  const [data, setData] = useState<TodoItem[]>([]);
+  const [data, setData] = useState<SherafObject[]>([]);
+
+  const getDatatypeKeys = useCallback((datatype: any) => Object.keys(datatype), [])
+
+  const getLine = useCallback((datatype: any) => getDatatypeKeys(datatype)
+      .map((key) => <td>{datatype[key]}</td>), [getDatatypeKeys])
+
 
   useEffect(() => {
-    fetch("http://localhost:5000/data?n=10")
+    fetch(`${process.env.REACT_APP_ROOT_URL}/data?n=10`)
       .then((response) => response.json())
       .then((json) => setData(json));
   }, []);
 
+const header = useMemo(() => {
+    if(data.length) {
+        return getDatatypeKeys(data[0]).map(key => <th>{key}</th>)
+    }
+}, [data])
   return (
     <div className="data-table">
       <table>
         <thead>
           <tr>
-            <th>Id</th>
-            <th>Age</th>
-            <th>Content</th>
-            <th>Priority</th>
+              {header}
           </tr>
         </thead>
         <tbody>
-          {data.map((d, idx) => (
+         {data.map((d, idx) => (
             <tr key={idx}>
-              <td>{d.id}</td>
-              <td>{d.age}</td>
-              <td>{d.content}</td>
-              <td>{d.priority}</td>
+                {getLine(d)}
             </tr>
           ))}
         </tbody>
